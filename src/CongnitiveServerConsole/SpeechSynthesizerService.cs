@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CognitiveServices.Speech;
+using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.CognitiveServices.Speech.Translation;
 
 namespace CongnitiveServerConsole
@@ -36,7 +37,12 @@ namespace CongnitiveServerConsole
         {
             var config = GetClient();
             var sb = new StringBuilder();
-            using var synthesizer = new SpeechSynthesizer(config);
+
+
+            using var synthesizer = new SpeechSynthesizer(config, 
+                AutoDetectSourceLanguageConfig.FromOpenRange(), 
+                AudioConfig.FromDefaultSpeakerOutput());
+
             using var result = await synthesizer.SpeakTextAsync(text);
             if (result.Reason == ResultReason.SynthesizingAudioCompleted)
             {
@@ -111,7 +117,7 @@ namespace CongnitiveServerConsole
                     {
                         Console.WriteLine($"    TRANSLATING into '{element.Key}': {element.Value}");
 
-                        // SynthesisToSpeakerAsync(element.Value).Wait();
+                        SynthesisToSpeakerAsync(element.Value).Wait();
                     }
                 }
             };
